@@ -6,3 +6,4 @@ gunicorn
 psycopg2==2.8.5
 python-dotenv==0.14.0
 pytest-flask
+pytest-mock

@@ -1,9 +1,12 @@
 from flask import render_template, request, make_response, jsonify
+from sqlalchemy.orm.exc import NoResultFound
+from werkzeug.exceptions import abort
+
 from flask_web import db
 from datetime import datetime
 from flask_web.enums.Status import Status
 from flask_web.main import bp
-from flask_web.models import Stand
+from flask_web.models import Stand, StatusHistory
 
 
 @bp.route("/", methods=["GET"])
@@ -20,23 +23,38 @@ def throw():
 
 @bp.route('/stand/<string:external_id>', methods=["GET"])
 def get_stand(external_id):
-    stand = db.session.query(Stand).filter(Stand.external_id == external_id).one()
+    try:
+        stand = db.session.query(Stand).filter(Stand.external_id == external_id).one()
+    except NoResultFound:
+        abort(404)
+
     response = make_response(jsonify(stand.serialize()), 200)
     response.headers["Content-Type"] = "application/json"
     return response
 
 
 @bp.route('/stand/<string:external_id>/status', methods=["GET", "POST"])
-def update_status(external_id):
+def stand_status(external_id):
+    try:
+        stand = db.session.query(Stand).filter(Stand.external_id == external_id).one()
+    except NoResultFound:
+        abort(404)
 
     if request.method == 'POST':
-        status = Status(request.json.get('status')).value
-        db.session.query(Stand).filter(Stand.external_id == external_id).update(
-            {Stand.status: status, Stand.status_date: datetime.now()},
-            synchronize_session=False)
-        db.session.commit()
 
-    stand = db.session.query(Stand).filter(Stand.external_id == external_id).one()
+        try:
+            status = Status(request.json.get('status')).value
+        except ValueError:
+            abort(422, "Status {} is invalid".format(request.json.get('status')))
+
+        status_date = datetime.now()
+        status_history = StatusHistory(stand_id=stand.id, status=status, status_date=status_date)
+        db.session.query(Stand).filter(Stand.external_id == external_id).update(
+            {Stand.status: status, Stand.status_date: status_date},
+            synchronize_session=False)
+        db.session.add(status_history)
+        db.session.commit()
+        stand = db.session.query(Stand).filter(Stand.external_id == external_id).one()
 
     response = make_response(jsonify(stand.status), 200)
     response.headers["Content-Type"] = "application/json"

@@ -10,9 +10,12 @@
 
                     <div class="row">
                         <div class="col-xl-12 col-md-12 mb-12">
-                            Stands:
+                            Stands: </br>
                             {% for stand in stands %}
-                                {{ stand.external_id }}
+                                {{ stand.external_id }} - {{ stand.name }} - {{ stand.status }} - {{ stand.status_date }}</br>
+                                {% for history in stand.history %}
+                                ---------- {{ history.status }} - {{ history.status_date }}</br>
+                                {% endfor %}
                             {% endfor %}
                         </div>
                     </div>
