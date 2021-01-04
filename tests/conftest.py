@@ -1,7 +1,11 @@
+from base64 import b64encode
+
 import pytest
 from flask_web import create_app, db
 import os
 from dotenv import load_dotenv
+
+from flask_web.models import User
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(basedir, '.env'))
@@ -13,6 +17,7 @@ class Config(object):
         'sqlite:///' + os.path.join(basedir, 'test_app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     TESTING = True
+    LOGIN_DISABLED = True
 
 
 @pytest.fixture()
@@ -34,4 +39,3 @@ def init_database(test_client):
     yield  # this is where the testing happens!
 
     db.drop_all()
-

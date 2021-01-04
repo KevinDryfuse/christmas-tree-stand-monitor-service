@@ -1,9 +1,50 @@
-from datetime import datetime
-from sqlalchemy import Integer, ForeignKey
-from flask_web import db
 from uuid import uuid4
-from flask_web.enums.Status import Status
+
+from flask_login import UserMixin
+from sqlalchemy import Integer, ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm import validates
+from werkzeug.security import generate_password_hash, check_password_hash
+
+from flask_web import db
+from flask_web import login
+from flask_web.enums.Status import Status
+
+
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+
+# TODO: Tests
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    external_id = db.Column(db.String(36), index=True, unique=True)
+    first_name = db.Column(db.String(64))
+    last_name = db.Column(db.String(64))
+    email = db.Column(db.String(120), index=True, unique=True)
+    password_hash = db.Column(db.String(128))
+
+    def __init__(self, email, first_name, last_name, plaintext_password):
+        self.email = email
+        self.first_name = first_name
+        self.last_name = last_name
+        self.password_hash = generate_password_hash(plaintext_password)
+
+    def set_password(self, plaintext_password):
+        self.password_hash = generate_password_hash(plaintext_password)
+
+    @validates('email')
+    def convert_lower(self, key, value):
+        return value.lower()
+
+    def __repr__(self):
+        return '<User {} {}>'.format(self.first_name, self.last_name)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
 
 class Stand(db.Model):
