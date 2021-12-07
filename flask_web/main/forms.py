@@ -31,3 +31,9 @@ class Register(FlaskForm):
         else:
             return True
 
+
+class EditProfile(FlaskForm):
+    first_name = StringField('First Name', validators=[DataRequired(), Length(min=1, max=64)], )
+    last_name = StringField('Last Name', validators=[DataRequired(), Length(min=1, max=64)])
+    email = StringField('Email Address', validators=[DataRequired(), Email()])
+    submit = SubmitField('Update Profile')

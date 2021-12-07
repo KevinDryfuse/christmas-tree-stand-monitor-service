@@ -1,14 +1,14 @@
 from datetime import datetime
 
 from flask import render_template, request, make_response, jsonify, flash, redirect, url_for
-from flask_login import current_user, login_user, login_required
+from flask_login import current_user, login_user, logout_user, login_required
 from sqlalchemy.orm.exc import NoResultFound
 from werkzeug.exceptions import abort
 
 from flask_web import db
 from flask_web.enums.Status import Status
 from flask_web.main import bp
-from flask_web.main.forms import Login, Register
+from flask_web.main.forms import Login, Register, EditProfile
 from flask_web.models import User, Stand, StatusHistory
 
 
@@ -84,6 +84,13 @@ def login():
 
 
 # TODO: Tests
+@bp.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('main.index'))
+
+
+# TODO: Tests
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -105,3 +112,22 @@ def register():
                 flash('Email address has already been registered')
 
     return render_template('register.html', title='Register', form=form)
+
+
+# TODO: Tests
+@bp.route('/profile', methods=['GET', 'POST'])
+@login_required
+def edit_profile():
+    u = db.session.query(User).filter(User.id == current_user.id).one()
+    print(u)
+    form = EditProfile()
+
+    form.first_name.data = u.first_name
+    form.last_name.data = u.last_name
+    form.email.data = u.email
+
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            print("XXXXX")
+
+    return render_template("edit_profile.html", title='Edit Profile', form=form)
