@@ -2,7 +2,7 @@
 {% block content %}
 
 <div class="row">
-    <div class="col-10">
+    <div class="">
         <div class="card shadow mb-4">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                 <h6 class="m-0 font-weight-bold text-primary">Edit Profile</h6>
@@ -44,18 +44,16 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-2">{{ form.submit(class_="btn btn-primary") }}</div>
-                        <a class="btn btn-secondary btn-sm .text-nowrap" role="button" href="{{ url_for('main.index') }}" data-toggle="modal" data-target="#cancelModal">
-                        Cancel</a>
-
+                        <div class="col-2">
+                            {{ form.submit(class_="btn btn-primary") }}
+                            <a class="btn btn-secondary .text-nowrap" role="button" href="{{ url_for('main.index') }}" data-toggle="modal" data-target="#cancelModal">Cancel</a>
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-
 </div>
-
 
 <div class="modal fade" id="cancelModal" tabindex="-1" role="dialog"
      aria-labelledby="exampleModalLabel" aria-hidden="true">

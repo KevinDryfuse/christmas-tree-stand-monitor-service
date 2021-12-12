@@ -22,7 +22,7 @@
                             {{ form.hidden_tag() }}
                             {% with messages = get_flashed_messages() %}
                             {% if messages %}
-                            <ul>
+                            <ul style="color: red;">
                                 {% for message in messages %}
                                 <li>{{ message }}</li>
                                 {% endfor %}

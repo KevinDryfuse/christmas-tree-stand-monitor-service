@@ -33,7 +33,20 @@ class Register(FlaskForm):
 
 
 class EditProfile(FlaskForm):
-    first_name = StringField('First Name', validators=[DataRequired(), Length(min=1, max=64)], )
+    first_name = StringField('First Name', validators=[DataRequired(), Length(min=1, max=64)])
     last_name = StringField('Last Name', validators=[DataRequired(), Length(min=1, max=64)])
-    email = StringField('Email Address', validators=[DataRequired(), Email()])
+    email = StringField('Email Address')
     submit = SubmitField('Update Profile')
+
+
+class Add(FlaskForm):
+    registration_id = StringField('Device Registration ID', validators=[DataRequired(), Length(min=1, max=10)])
+    name = StringField('Device Name', validators=[DataRequired(), Length(min=1, max=64)])
+    submit = SubmitField('Add Tree Stand')
+
+
+class EditStand(FlaskForm):
+    registration_id = StringField('Device Registration ID', validators=[DataRequired(), Length(min=1, max=10)])
+    name = StringField('Device Name', validators=[DataRequired(), Length(min=1, max=64)])
+    submit = SubmitField('Edit Tree Stand')
+
