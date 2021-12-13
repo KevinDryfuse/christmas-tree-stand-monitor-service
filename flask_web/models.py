@@ -60,8 +60,8 @@ class Stand(db.Model):
     history = relationship("StatusHistory", back_populates="stand")
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self, user_id, registration_id, name):
-        self.external_id = str(uuid4())
+    def __init__(self, user_id, external_id, registration_id, name):
+        self.external_id = external_id
         self.user_id = user_id
         self.registration_id = registration_id
         self.name = name

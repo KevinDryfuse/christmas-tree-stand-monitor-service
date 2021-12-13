@@ -2,11 +2,11 @@
 Service for tracking water levels in your Christmas tree stand.
 
 from flask_web import db
-from flask_web.models import Product, Stand, User
+from flask_web.models import Product, Stand, User, StatusHistory
 from flask_web import create_app
 app = create_app()
 app.app_context().push()
-p = Product(model_number="TS1-PROTOTYPE")
+p = Product(model_number="TS1000")
 print(f"registration id: {p.registration_id}")
 db.session.add(p)
 db.session.commit()
