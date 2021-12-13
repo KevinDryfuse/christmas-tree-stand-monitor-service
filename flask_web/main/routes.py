@@ -169,7 +169,7 @@ def add_stand():
                 flash("Device Registration ID is not valid, please try again")
                 return redirect(url_for("main.add_stand"))
             else:
-                s = Stand(user_id=user_id, registration_id=product.registration_id, name=form.name.data)
+                s = Stand(user_id=user_id, external_id=product.external_id, registration_id=product.registration_id, name=form.name.data)
                 db.session.add(s)
                 db.session.commit()
 
@@ -189,3 +189,10 @@ def edit_stand(external_id):
     form.name.data = s.name
 
     return render_template("edit_stand.html", title="Edit Stand", form=form)
+
+
+@bp.route("/health", methods=["GET", "POST"])
+def health():
+    print("HERE!")
+
+    return render_template("health.html", title="Health")
